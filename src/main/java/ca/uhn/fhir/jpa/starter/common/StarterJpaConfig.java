@@ -334,7 +334,9 @@ public class StarterJpaConfig {
 			ApplicationContext appContext,
 			Optional<IpsOperationProvider> theIpsOperationProvider,
 			Optional<IImplementationGuideOperationProvider> implementationGuideOperationProvider,
-			DiffProvider diffProvider) {
+			DiffProvider diffProvider,
+			Optional<ca.uhn.fhir.jpa.starter.interceptor.ApiTokenAuthInterceptor> apiTokenAuthInterceptor,
+			Optional<ca.uhn.fhir.jpa.starter.interceptor.ClinicPartitionInterceptor> clinicPartitionInterceptor) {
 		RestfulServer fhirServer = new RestfulServer(fhirSystemDao.getContext());
 
 		List<String> supportedResourceTypes = appProperties.getSupported_resource_types();
@@ -396,6 +398,12 @@ public class StarterJpaConfig {
 		}
 
 		fhirServer.registerInterceptor(loggingInterceptor);
+
+		// Register API Token Authentication Interceptor if present
+		apiTokenAuthInterceptor.ifPresent(fhirServer::registerInterceptor);
+
+		// Register Clinic Partition Interceptor for multi-tenancy if present
+		clinicPartitionInterceptor.ifPresent(fhirServer::registerInterceptor);
 
 		implementationGuideOperationProvider.ifPresent(fhirServer::registerProvider);
 
