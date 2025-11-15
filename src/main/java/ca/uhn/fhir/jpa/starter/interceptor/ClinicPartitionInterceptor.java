@@ -51,8 +51,10 @@ public class ClinicPartitionInterceptor {
         CLINIC_PARTITION_MAP.put("ddx-munich-clinic", 3);
         CLINIC_PARTITION_MAP.put("ddx-frankfurt-clinic", 4);
         CLINIC_PARTITION_MAP.put("ddx-cologne-clinic", 5);
+        CLINIC_PARTITION_MAP.put("ddx-default-clinic", 6);
+        CLINIC_PARTITION_MAP.put("ddx-shared-clinic", 7);
         
-        // For testing/development
+        // For testing/development (legacy)
         CLINIC_PARTITION_MAP.put("default", 0);
     }
     
