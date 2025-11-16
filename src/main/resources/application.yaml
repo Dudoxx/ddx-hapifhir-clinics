@@ -67,8 +67,11 @@ spring:
     allow-circular-references: true
 
   autoconfigure:
-    # This exclude is only needed for setups not using Elasticsearch where the elasticsearch sniff is not needed.
-    exclude: org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
+    # Exclude autoconfiguration for services that conflict with partition mode
+    exclude:
+      - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
+      # Disable subscription autoconfiguration to prevent partition cache warmup errors
+      - ca.uhn.fhir.jpa.subscription.config.SubscriptionProcessorConfig
 
   flyway:
     enabled: false
