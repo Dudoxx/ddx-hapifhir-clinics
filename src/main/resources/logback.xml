@@ -5,5 +5,15 @@
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 	</root>
-	<logger name = "org.opencds.cqf.cql.engine.debug" level="DEBUG"/>
+	
+	<!-- Application loggers -->
+	<logger name="org.opencds.cqf.cql.engine.debug" level="DEBUG"/>
+	
+	<!-- Suppress Hibernate's early connection pool logging (shows "undefined/unknown") -->
+	<!-- This is cosmetic - HikariCP metadata isn't available during Hibernate init -->
+	<logger name="org.hibernate.orm.connections.pooling" level="WARN"/>
+	
+	<!-- Show HikariCP initialization (shows actual pool config) -->
+	<logger name="com.zaxxer.hikari" level="INFO"/>
+	<logger name="com.zaxxer.hikari.HikariConfig" level="DEBUG"/>
 </configuration>

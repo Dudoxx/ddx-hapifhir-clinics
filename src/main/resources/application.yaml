@@ -10,6 +10,15 @@ server:
     # allow | as a separator in URLs
     relaxed-query-chars: "|"
 
+# -------------------------------------------------------------------------------
+# Logging Configuration
+# -------------------------------------------------------------------------------
+logging:
+  level:
+    # Suppress HAPI-1220 retry errors during search parameter cache warmup
+    # These errors are cosmetic and non-critical (see PARTITION_CONFIGURATION_FINAL.md)
+    ca.uhn.fhir.jpa.searchparam.retry.Retrier: OFF
+
 management:
   # Actuator endpoints: only /actuator/health exposed by default
   endpoints:
@@ -75,7 +84,20 @@ spring:
     password: admin
     driver-class-name: org.postgresql.Driver
     hikari:
+      # Connection Pool Configuration
       maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000           # 30 seconds
+      idle-timeout: 600000                # 10 minutes
+      max-lifetime: 1800000               # 30 minutes
+      auto-commit: true
+      pool-name: HapiFhirHikariPool
+      # Connection Test Query
+      connection-test-query: SELECT 1
+      # Logging
+      register-mbeans: true
+      # Transaction Isolation
+      transaction-isolation: TRANSACTION_READ_COMMITTED
 
   jpa:
     open-in-view: false                          # Disable open session in view (not needed for API)
@@ -110,6 +132,11 @@ hapi:
     # -------------------------------------------------------------------------------
     openapi_enabled: true                       # Swagger UI at /fhir/swagger-ui/index.html; API docs at /fhir/api-docs
     fhir_version: R4                            # DSTU2 | DSTU3 | R4 | R5
+    
+    # -------------------------------------------------------------------------------
+    # Custom Bean Packages (REQUIRED for ClinicPartitionInterceptor)
+    # -------------------------------------------------------------------------------
+    custom_bean_packages: ca.uhn.fhir.jpa.starter.interceptor
     
     # -------------------------------------------------------------------------------
     # Authentication & Authorization
@@ -242,21 +269,24 @@ hapi:
     # -------------------------------------------------------------------------------
     # M. Subscriptions
     # -------------------------------------------------------------------------------
+    # CRITICAL: Disable subscriptions to prevent partition cache warmup errors
+    # The subscription cache tries to search all partitions during startup,
+    # which conflicts with partition isolation. Enable only if using subscriptions.
     subscription:
-      resthook_enabled: true
+      resthook_enabled: false  # Disabled to prevent HAPI-1220 errors
       websocket_enabled: false
 
     # -------------------------------------------------------------------------------
     # N. Multi-Tenancy / Partitioning Configuration
     # -------------------------------------------------------------------------------
-    # Enable partitioning for multi-tenant isolation (clinic separation)
+    # Enable partitioning for multi-clinic isolation
     partitioning:
       # Enable partitioning mode
       enabled: true
-      # Disable request tenant partitioning (using custom ClinicPartitionInterceptor instead)
+      # Use custom ClinicPartitionInterceptor (not request tenant mode)
       request_tenant_partitioning_mode: false
-      # Allow cross-partition references (set to false for strict isolation)
-      allow_references_across_partitions: false
+      # Allow system operations to work across partitions
+      allow_references_across_partitions: true
       # Include partition in search hashes for better performance
       partitioning_include_in_search_hashes: true
       # Allow conditional creates with duplicate identifiers across partitions

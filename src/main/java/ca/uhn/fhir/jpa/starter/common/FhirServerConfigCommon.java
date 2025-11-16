@@ -325,16 +325,20 @@ public class FhirServerConfigCommon {
 				retVal.setDatabasePartitionMode(true);
 				defaultPartitionId = defaultIfNull(defaultPartitionId, 0);
 			}
-			retVal.setDefaultPartitionId(defaultPartitionId);
-			retVal.setIncludePartitionInSearchHashes(
-					appProperties.getPartitioning().getPartitioning_include_in_search_hashes());
-			if (appProperties.getPartitioning().getAllow_references_across_partitions()) {
-				retVal.setAllowReferencesAcrossPartitions(CrossPartitionReferenceMode.ALLOWED_UNQUALIFIED);
-			} else {
-				retVal.setAllowReferencesAcrossPartitions(CrossPartitionReferenceMode.NOT_ALLOWED);
-			}
-			retVal.setConditionalCreateDuplicateIdentifiersEnabled(
-					appProperties.getPartitioning().getConditional_create_duplicate_identifiers_enabled());
+		retVal.setDefaultPartitionId(defaultPartitionId);
+		retVal.setIncludePartitionInSearchHashes(
+				appProperties.getPartitioning().getPartitioning_include_in_search_hashes());
+		if (appProperties.getPartitioning().getAllow_references_across_partitions()) {
+			retVal.setAllowReferencesAcrossPartitions(CrossPartitionReferenceMode.ALLOWED_UNQUALIFIED);
+			// CRITICAL FIX: Enable unnamed partition mode for system operations
+			// When no partition is specified, use the default partition (ID 0)
+			// This prevents HAPI-1220 errors during search parameter cache warmup
+			retVal.setUnnamedPartitionMode(true);
+		} else {
+			retVal.setAllowReferencesAcrossPartitions(CrossPartitionReferenceMode.NOT_ALLOWED);
+		}
+		retVal.setConditionalCreateDuplicateIdentifiersEnabled(
+				appProperties.getPartitioning().getConditional_create_duplicate_identifiers_enabled());
 
 			ourLog.info(
 					"""

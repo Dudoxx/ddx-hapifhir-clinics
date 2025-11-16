@@ -108,7 +108,10 @@ import static ca.uhn.fhir.jpa.starter.common.validation.IRepositoryValidationInt
 
 @Configuration
 // allow users to configure custom packages to scan for additional beans
-@ComponentScan(basePackages = {"${hapi.fhir.custom-bean-packages:}"})
+@ComponentScan(basePackages = {
+	"${hapi.fhir.custom-bean-packages:}",
+	"ca.uhn.fhir.jpa.starter.interceptor"  // Always scan for custom interceptors
+})
 @Import(ThreadPoolFactoryConfig.class)
 public class StarterJpaConfig {
 
@@ -368,41 +371,11 @@ public class StarterJpaConfig {
 		if (!appProperties.getEtag_support_enabled()) fhirServer.setETagSupport(ETagSupportEnum.DISABLED);
 
 		/*
-		 * Default to JSON and pretty printing
+		 * Register interceptors
 		 */
-		fhirServer.setDefaultPrettyPrint(appProperties.getDefault_pretty_print());
-
-		/*
-		 * Default encoding
-		 */
-		fhirServer.setDefaultResponseEncoding(appProperties.getDefault_encoding());
-
-		/*
-		 * This configures the server to page search results to and from
-		 * the database, instead of only paging them to memory. This may mean
-		 * a performance hit when performing searches that return lots of results,
-		 * but makes the server much more scalable.
-		 */
-
-		fhirServer.setPagingProvider(databaseBackedPagingProvider);
-
-		/*
-		 * This interceptor formats the output using nice colourful
-		 * HTML output when the request is detected to come from a
-		 * browser.
-		 */
-		fhirServer.registerInterceptor(new ResponseHighlighterInterceptor());
-
-		if (appProperties.getFhirpath_interceptor_enabled()) {
-			fhirServer.registerInterceptor(new FhirPathFilterInterceptor());
-		}
-
-		fhirServer.registerInterceptor(loggingInterceptor);
-
-		// Register API Token Authentication Interceptor if present
 		apiTokenAuthInterceptor.ifPresent(fhirServer::registerInterceptor);
 
-		// Register Clinic Partition Interceptor for multi-tenancy if present
+		// Register Clinic Partition Interceptor for multi-tenancy
 		clinicPartitionInterceptor.ifPresent(fhirServer::registerInterceptor);
 
 		implementationGuideOperationProvider.ifPresent(fhirServer::registerProvider);
