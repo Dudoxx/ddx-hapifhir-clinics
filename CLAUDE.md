@@ -1,9 +1,10 @@
 # Claude AI Context - HAPI FHIR Server
 
 **Repository:** ddx-hapifhir-clinics  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Date:** November 16, 2025  
-**Owner:** Dudoxx UG
+**Owner:** Dudoxx UG  
+**Latest Update:** Startup scripts and alternative configuration
 
 ---
 
