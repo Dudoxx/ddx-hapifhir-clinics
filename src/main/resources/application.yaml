@@ -70,8 +70,6 @@ spring:
     # Exclude autoconfiguration for services that conflict with partition mode
     exclude:
       - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
-      # Disable subscription autoconfiguration to prevent partition cache warmup errors
-      - ca.uhn.fhir.jpa.subscription.config.SubscriptionProcessorConfig
 
   flyway:
     enabled: false
@@ -286,13 +284,18 @@ hapi:
     partitioning:
       # Enable partitioning mode
       enabled: true
+      # Enable patient ID partitioning to unlock unnamed partition mode
+      # This allows system operations to use default partition without errors
+      patient_id_partitioning_mode: false
       # Use custom ClinicPartitionInterceptor (not request tenant mode)
       request_tenant_partitioning_mode: false
       # Allow system operations to work across partitions
       allow_references_across_partitions: true
       # Include partition in search hashes for better performance
-      partitioning_include_in_search_hashes: true
+      partitioning_include_in_search_hashes: false
       # Allow conditional creates with duplicate identifiers across partitions
       conditional_create_duplicate_identifiers_enabled: true
       # Default partition ID (0 = system/default partition for background jobs)
       default_partition_id: 0
+      # Enable database partition mode to allow searches without partition context
+      database_partition_mode_enabled: false
