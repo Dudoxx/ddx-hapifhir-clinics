@@ -73,11 +73,25 @@ public class ApiTokenAuthInterceptor extends InterceptorAdapter {
 
     /**
      * Check if the endpoint is public (doesn't require authentication)
+     * 
+     * Public endpoints include:
+     * - /metadata (FHIR CapabilityStatement)
+     * - /actuator/health (Health check)
+     * - /.well-known/ (SMART on FHIR discovery)
+     * - /oauth/ (OAuth endpoints)
+     * - /swagger-ui/ (Swagger UI interface)
+     * - /api-docs (OpenAPI documentation)
+     * - /webjars/ (Swagger UI static resources)
      */
     private boolean isPublicEndpoint(String uri) {
         return uri.contains("/metadata") || 
                uri.contains("/actuator/health") ||
                uri.contains("/.well-known/") ||
-               uri.contains("/oauth/");
+               uri.contains("/oauth/") ||
+               uri.contains("/swagger-ui/") ||
+               uri.contains("/swagger-ui.html") ||
+               uri.contains("/api-docs") ||
+               uri.contains("/webjars/") ||
+               uri.contains("/swagger-resources/");
     }
 }

@@ -15,9 +15,29 @@ server:
 # -------------------------------------------------------------------------------
 logging:
   level:
+    # Root logger
+    root: INFO
+    
     # Suppress HAPI-1220 retry errors during search parameter cache warmup
     # These errors are cosmetic and non-critical (see PARTITION_CONFIGURATION_FINAL.md)
     ca.uhn.fhir.jpa.searchparam.retry.Retrier: OFF
+    
+    # Enable detailed REST endpoint logging
+    ca.uhn.fhir.rest.server: DEBUG                    # REST server operations
+    ca.uhn.fhir.rest.server.interceptor: DEBUG        # Interceptors (auth, logging, etc.)
+    ca.uhn.fhir.rest.server.RestfulServer: DEBUG      # REST server requests/responses
+    ca.uhn.fhir.rest.api.server: DEBUG                # REST API operations
+    
+    # Enable request/response logging
+    org.springframework.web.servlet.mvc: DEBUG        # Spring MVC request mapping
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    
+    # Enable search parameter logging
+    ca.uhn.fhir.jpa.searchparam: INFO                 # Search parameter resolution
+    
+    # Enable SQL logging (optional - can be verbose)
+    # org.hibernate.SQL: DEBUG
+    # org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 management:
   # Actuator endpoints: only /actuator/health exposed by default
