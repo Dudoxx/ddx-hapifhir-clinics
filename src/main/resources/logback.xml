@@ -16,4 +16,8 @@
 	<!-- Show HikariCP initialization (shows actual pool config) -->
 	<logger name="com.zaxxer.hikari" level="INFO"/>
 	<logger name="com.zaxxer.hikari.HikariConfig" level="DEBUG"/>
+	
+	<!-- Suppress verbose HAPI FHIR parameter checking logs -->
+	<logger name="ca.uhn.fhir.rest.server.method.BaseQueryParameter" level="INFO"/>
+	<logger name="ca.uhn.fhir.rest.server.ResourceBinding" level="INFO"/>
 </configuration>

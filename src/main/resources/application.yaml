@@ -22,15 +22,15 @@ logging:
     # These errors are cosmetic and non-critical (see PARTITION_CONFIGURATION_FINAL.md)
     ca.uhn.fhir.jpa.searchparam.retry.Retrier: OFF
     
-    # Enable detailed REST endpoint logging
-    ca.uhn.fhir.rest.server: DEBUG                    # REST server operations
-    ca.uhn.fhir.rest.server.interceptor: DEBUG        # Interceptors (auth, logging, etc.)
-    ca.uhn.fhir.rest.server.RestfulServer: DEBUG      # REST server requests/responses
-    ca.uhn.fhir.rest.api.server: DEBUG                # REST API operations
-    
-    # Enable request/response logging
-    org.springframework.web.servlet.mvc: DEBUG        # Spring MVC request mapping
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    # Enable detailed REST endpoint logging (reduced from DEBUG to INFO for production)
+    ca.uhn.fhir.rest.server: INFO                     # REST server operations
+    ca.uhn.fhir.rest.server.interceptor: INFO          # Interceptors (auth, logging, etc.)
+    ca.uhn.fhir.rest.server.RestfulServer: INFO        # REST server requests/responses
+    ca.uhn.fhir.rest.api.server: INFO                  # REST API operations
+
+    # Enable request/response logging (reduced from DEBUG to INFO for production)
+    org.springframework.web.servlet.mvc: INFO          # Spring MVC request mapping
+    org.springframework.web.filter.CommonsRequestLoggingFilter: INFO
     
     # Enable search parameter logging
     ca.uhn.fhir.jpa.searchparam: INFO                 # Search parameter resolution
