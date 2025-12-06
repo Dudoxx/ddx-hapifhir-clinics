@@ -1,6 +1,16 @@
-# Dudoxx HAPI FHIR Multi-Clinic Server
+<p align="center">
+  <img src="assets/branding/toucan_transparent.png" alt="Dudoxx Logo" width="120" />
+</p>
 
-**A production-ready FHIR R4 server with multi-tenant clinic isolation, authentication, and PostgreSQL backend.**
+<h1 align="center">Dudoxx HAPI FHIR Multi-Clinic Server</h1>
+
+<p align="center">
+  <strong>Port:</strong> 8080 | <strong>FHIR R4</strong> | <strong>Multi-Tenant</strong>
+</p>
+
+<p align="center">
+  A production-ready FHIR R4 server with multi-tenant clinic isolation, authentication, and PostgreSQL backend.
+</p>
 
 ---
 
